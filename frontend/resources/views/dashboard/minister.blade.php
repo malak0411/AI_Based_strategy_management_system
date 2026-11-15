@@ -1,13 +1,10 @@
 @extends('layouts.app')
 
-
 @section('title', 'لوحة الوزير')
-
 
 @push('styles')
 <style>
     :root { --navy:#0D1B3E; --blue:#1e40af; --blue-l:#3b82f6; --gray:#5b6580; --line:#e6e9f2; }
-
 
     .min-hero {
         background: linear-gradient(135deg, #0D1B3E 0%, #1e40af 60%, #2563eb 100%);
@@ -24,7 +21,6 @@
     .min-hero .index-ring .v { font-size: 2.4rem; font-weight: 800; line-height: 1; }
     .min-hero .index-ring .l { font-size: .75rem; color: #cdd6ee; margin-top: 6px; }
 
-
     .min-tabs .nav-link {
         border: 0; color: var(--gray); font-weight: 600;
         padding: 12px 22px; border-radius: 10px;
@@ -33,10 +29,8 @@
     }
     .min-tabs .nav-link.active { background: var(--navy); color: #fff; }
 
-
     .card-soft { background:#fff; border:1px solid var(--line); border-radius: 14px; padding: 20px; height:100%; }
     .card-soft .h { font-weight: 700; color: var(--navy); margin-bottom: 14px; font-size: .95rem; }
-
 
     .kpi-box {
         background: #fff; border: 1px solid var(--line); border-radius: 14px;
@@ -50,7 +44,6 @@
     .kpi-box .v { font-size: 1.6rem; font-weight: 800; color: var(--navy); line-height: 1; }
     .kpi-box .l { color: var(--gray); font-size: .76rem; margin-top: 4px; }
 
-
     .health-card {
         background: #fff; border: 1px solid var(--line); border-radius: 14px;
         padding: 18px; text-align: center; height: 100%;
@@ -61,7 +54,6 @@
     .health-card.yellow{ border-inline-start: 5px solid #f59e0b; }
     .health-card.red   { border-inline-start: 5px solid #ef4444; }
 
-
     .pill { padding: 4px 11px; border-radius: 20px; font-size: .72rem; font-weight: 600; display:inline-block; }
     .pill.blue   { background:#eff6ff; color:#1d4ed8; }
     .pill.green  { background:#ecfdf5; color:#047857; }
@@ -70,7 +62,6 @@
     .pill.purple { background:#f5f3ff; color:#6d28d9; }
     .pill.gray   { background:#f3f4f6; color:#4b5563; }
     .pill.cyan   { background:#ecfeff; color:#0e7490; }
-
 
     .tbl-clean { font-size: .85rem; margin-bottom: 0; }
     .tbl-clean thead th {
@@ -81,7 +72,6 @@
     .tbl-clean tbody td { padding: 12px; vertical-align: middle; border-bottom: 1px solid #f1f4fa; }
     .tbl-clean tbody tr:hover { background: #fafbff; }
 
-
     .progress-thin { height: 7px; background: #eef1f7; border-radius: 5px; overflow: hidden; }
     .progress-thin > span {
         display: block; height: 100%;
@@ -91,7 +81,6 @@
     .progress-thin.ok > span   { background: linear-gradient(90deg, #027a48, #4caf50); }
     .progress-thin.warn > span { background: linear-gradient(90deg, #b54708, #f59e0b); }
     .progress-thin.bad > span  { background: linear-gradient(90deg, #b42318, #ef4444); }
-
 
     .strategy-tree {
         padding: 20px; background: #fbfcff;
@@ -114,7 +103,6 @@
     .pillar-link:hover .pillar-title { color: var(--blue); }
     .pillar-link:hover { box-shadow: 0 4px 14px rgba(13,27,62,.06); }
 
-
     .goal-link { display: block; text-decoration: none; color: inherit; }
     .goal-line {
         padding: 10px 12px; background: #f7f9fd;
@@ -126,7 +114,6 @@
     .goal-line.current-goal { border-inline-start-color: #4caf50; background: #f0fdf4; }
     .goal-line .goal-title { font-weight: 700; color: var(--navy); font-size: .88rem; }
 
-
     .program-line {
         padding: 8px 12px; margin-top: 6px; margin-inline-start: 14px;
         background: #fff; border-radius: 6px;
@@ -136,7 +123,6 @@
         transition: .15s;
     }
     .program-line:hover { background: #f5f3ff; }
-
 
     .initiative-line {
         padding: 6px 10px; margin-top: 4px; margin-inline-start: 14px;
@@ -149,23 +135,6 @@
     }
     .initiative-line:hover { background: #eff6ff; border-color: #bfdbfe; }
     .initiative-line .prog-bar { width: 100px; }
-
-
-    .dept-rank-item {
-        display: flex; align-items: center; gap: 12px;
-        padding: 10px 0; border-bottom: 1px solid #f1f4fa;
-    }
-    .dept-rank-item:last-child { border-bottom: 0; }
-    .rank-badge {
-        width: 32px; height: 32px; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-weight: 700; color: #fff; font-size: .82rem; flex-shrink: 0;
-    }
-    .rank-badge.gold   { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
-    .rank-badge.silver { background: linear-gradient(135deg, #6b7280, #9ca3af); }
-    .rank-badge.bronze { background: linear-gradient(135deg, #92400e, #b45309); }
-    .rank-badge.normal { background: #cbd5e1; color: #334155; }
-
 
     .perf-card {
         display: flex; align-items: center; gap: 12px;
@@ -181,7 +150,6 @@
         flex-shrink: 0;
     }
 
-
     .scope-box {
         background: #fff; border: 1px solid var(--line); border-radius: 12px;
         padding: 14px; text-align: center;
@@ -189,10 +157,8 @@
     .scope-box .v { font-size: 1.6rem; font-weight: 800; color: var(--navy); line-height: 1; }
     .scope-box .l { font-size: .75rem; color: var(--gray); margin-top: 4px; }
 
-
     .chart-wrap { position: relative; height: 280px; }
     .chart-wrap-sm { position: relative; height: 220px; }
-
 
     .dept-full-card {
         border: 1px solid var(--line); border-radius: 14px;
@@ -211,7 +177,6 @@
     .dept-mini-kpi .v { font-weight: 700; font-size: 1rem; color: var(--navy); }
     .dept-mini-kpi .l { font-size: .68rem; color: var(--gray); }
 
-
     .major-task-chip {
         padding: 8px 12px; background: #fafbff;
         border-radius: 8px; margin-bottom: 6px;
@@ -219,13 +184,17 @@
         display: flex; justify-content: space-between; align-items: center;
         font-size: .82rem;
     }
+
+    .health-summary-bar {
+        display: flex; height: 14px;
+        border-radius: 7px; overflow: hidden;
+        background: #eef1f7;
+    }
 </style>
 @endpush
 
-
 @section('content')
 <div class="container-fluid" dir="rtl">
-
 
     @php
         $scope = $data['scope'] ?? [];
@@ -238,11 +207,9 @@
         $health = $ov['kpi_health'] ?? [];
     @endphp
 
-
     @if(!empty($error))
         <div class="alert alert-danger">{{ $error }}</div>
     @else
-
 
     <div class="min-hero">
         <div class="row align-items-center g-4">
@@ -267,7 +234,6 @@
             </div>
         </div>
     </div>
-
 
     <div class="row g-3 mb-4">
         <div class="col-md-3 col-6">
@@ -296,7 +262,6 @@
         </div>
     </div>
 
-
     <ul class="nav min-tabs mb-3 flex-wrap" role="tablist">
         <li class="nav-item">
             <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-map" type="button">
@@ -320,40 +285,64 @@
         </li>
     </ul>
 
-
     <div class="tab-content">
 
-
         <div class="tab-pane fade show active" id="tab-map">
-
 
             <div class="row g-3 mb-4">
                 <div class="col-md-3 col-6">
                     <div class="health-card green">
                         <div class="v text-success">{{ $health['green'] ?? 0 }}</div>
-                        <div class="l">مؤشرات على الطريق الصحيح</div>
+                        <div class="l">على الطريق الصحيح (≥80%)</div>
                     </div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="health-card yellow">
                         <div class="v" style="color:#d97706;">{{ $health['yellow'] ?? 0 }}</div>
-                        <div class="l">تحتاج متابعة</div>
+                        <div class="l">تحتاج متابعة (60-79%)</div>
                     </div>
                 </div>
                 <div class="col-md-3 col-6">
                     <div class="health-card red">
                         <div class="v text-danger">{{ $health['red'] ?? 0 }}</div>
-                        <div class="l">حرجة / في خطر</div>
+                        <div class="l">حرجة / في خطر (&lt;60%)</div>
                     </div>
                 </div>
                 <div class="col-md-3 col-6">
-                    <div class="health-card">
-                        <div class="v" style="color:#1d4ed8;">{{ $health['total'] ?? 0 }}</div>
-                        <div class="l">إجمالي المؤشرات</div>
+                    <div class="health-card" style="border-inline-start:5px solid #9ca3af;">
+                        <div class="v" style="color:#6b7280;">{{ $health['no_data'] ?? 0 }}</div>
+                        <div class="l">بدون قياس</div>
                     </div>
                 </div>
             </div>
 
+            @if(($health['total'] ?? 0) > 0)
+                <div class="card-soft mb-4">
+                    <div class="h"><i class="fas fa-info-circle text-info me-2"></i> ملخص حالة المؤشرات</div>
+                    <div class="small text-muted mb-3">
+                        <strong>{{ $health['total'] ?? 0 }}</strong> مؤشر إجمالي —
+                        <strong class="text-success">{{ $health['green'] ?? 0 }}</strong> على الطريق الصحيح •
+                        <strong style="color:#d97706;">{{ $health['yellow'] ?? 0 }}</strong> تحت المتابعة •
+                        <strong class="text-danger">{{ $health['red'] ?? 0 }}</strong> حرج
+                        @if(($health['no_data'] ?? 0) > 0)
+                            • <strong class="text-muted">{{ $health['no_data'] ?? 0 }}</strong> بدون قياس
+                        @endif
+                    </div>
+                    <div class="health-summary-bar">
+                        @php
+                            $totalH = max(1, $health['total'] ?? 0);
+                            $gPct = round((($health['green'] ?? 0) / $totalH) * 100);
+                            $yPct = round((($health['yellow'] ?? 0) / $totalH) * 100);
+                            $rPct = round((($health['red'] ?? 0) / $totalH) * 100);
+                            $nPct = max(0, 100 - $gPct - $yPct - $rPct);
+                        @endphp
+                        @if($gPct > 0)<div style="width:{{ $gPct }}%;background:#4caf50;"></div>@endif
+                        @if($yPct > 0)<div style="width:{{ $yPct }}%;background:#f59e0b;"></div>@endif
+                        @if($rPct > 0)<div style="width:{{ $rPct }}%;background:#ef4444;"></div>@endif
+                        @if($nPct > 0)<div style="width:{{ $nPct }}%;background:#9ca3af;"></div>@endif
+                    </div>
+                </div>
+            @endif
 
             <div class="card-soft mb-4">
                 <div class="h">
@@ -440,7 +429,6 @@
                 </div>
             </div>
 
-
             <div class="row g-3">
                 <div class="col-lg-4">
                     <div class="card-soft">
@@ -500,9 +488,7 @@
             </div>
         </div>
 
-
         <div class="tab-pane fade" id="tab-ministerial">
-
 
             <div class="card-soft mb-4">
                 <div class="h"><i class="fas fa-bullseye text-success me-2"></i> مؤشرات الأثر والنتائج</div>
@@ -523,17 +509,23 @@
                         @forelse($mp['impact_kpis'] ?? [] as $k)
                             @php
                                 $h = $k['health'] ?? 'red';
-                                $hCls = $h === 'green' ? 'green' : ($h === 'yellow' ? 'amber' : 'red');
+                                $hCls = $h === 'green' ? 'green' : ($h === 'yellow' ? 'amber' : ($h === 'no_data' ? 'gray' : 'red'));
                                 $tCls = ($k['trend'] ?? 'flat') === 'up' ? 'green' : (($k['trend'] ?? 'flat') === 'down' ? 'red' : 'gray');
                             @endphp
                             <tr>
                                 <td class="fw-semibold">{{ $k['name'] }}</td>
                                 <td><span class="pill gray">{{ $k['category'] ?? '—' }}</span></td>
                                 <td>{{ $k['target'] }} {{ $k['unit'] ?? '' }}</td>
-                                <td>{{ $k['current'] }} {{ $k['unit'] ?? '' }}</td>
+                                <td>
+                                    @if(!empty($k['has_measurement']))
+                                        {{ $k['current'] }} {{ $k['unit'] ?? '' }}
+                                    @else
+                                        <span class="text-muted">—</span>
+                                    @endif
+                                </td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
-                                        <div class="progress-thin {{ $h === 'green' ? 'ok' : ($h === 'yellow' ? 'warn' : 'bad') }} flex-grow-1">
+                                        <div class="progress-thin {{ $h === 'green' ? 'ok' : ($h === 'yellow' ? 'warn' : ($h === 'no_data' ? '' : 'bad')) }} flex-grow-1">
                                             <span style="width: {{ min($k['achievement'], 100) }}%"></span>
                                         </div>
                                         <small class="fw-semibold" style="min-width:50px;">{{ $k['achievement'] }}%</small>
@@ -545,7 +537,13 @@
                                         {{ $k['trend'] }}
                                     </span>
                                 </td>
-                                <td><span class="pill {{ $hCls }}">{{ $h === 'green' ? 'جيد' : ($h === 'yellow' ? 'متابعة' : 'حرج') }}</span></td>
+                                <td>
+                                    @if($h === 'no_data')
+                                        <span class="pill gray">بدون قياس</span>
+                                    @else
+                                        <span class="pill {{ $hCls }}">{{ $h === 'green' ? 'جيد' : ($h === 'yellow' ? 'متابعة' : 'حرج') }}</span>
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr><td colspan="7" class="text-center text-muted py-4">لا توجد مؤشرات أثر.</td></tr>
@@ -554,7 +552,6 @@
                     </table>
                 </div>
             </div>
-
 
             <div class="card-soft mb-4">
                 <div class="h"><i class="fas fa-rocket text-primary me-2"></i> متابعة المبادرات التحولية</div>
@@ -615,7 +612,6 @@
                 </div>
             </div>
 
-
             <div class="row g-3 mb-4">
                 <div class="col-lg-7">
                     <div class="card-soft">
@@ -630,7 +626,6 @@
                     </div>
                 </div>
             </div>
-
 
             <div class="card-soft">
                 <div class="h"><i class="fas fa-shield-alt text-danger me-2"></i> إدارة المخاطر الاستراتيجية</div>
@@ -672,9 +667,7 @@
             </div>
         </div>
 
-
         <div class="tab-pane fade" id="tab-dept">
-
 
             @forelse($dp['ranking'] ?? [] as $d)
                 @php
@@ -709,7 +702,6 @@
                             </span>
                         </div>
                     </div>
-
 
                     <div class="row g-2 mb-3">
                         <div class="col-6 col-md-2">
@@ -750,7 +742,6 @@
                         </div>
                     </div>
 
-
                     @if($hasMajors)
                         <div class="row g-3">
                             <div class="col-lg-6">
@@ -779,7 +770,6 @@
                                 @endforeach
                             </div>
 
-
                             <div class="col-lg-6">
                                 <div class="fw-bold small mb-2" style="color:var(--navy);">
                                     <i class="fas fa-chart-line text-success me-1"></i> إحصائيات سير العمل والمخاطر
@@ -798,7 +788,6 @@
                                         </div>
                                     </div>
                                 </div>
-
 
                                 <div class="row g-2 mb-2">
                                     <div class="col-4">
@@ -821,7 +810,6 @@
                                     </div>
                                 </div>
 
-
                                 <div class="row g-2">
                                     <div class="col-4">
                                         <div class="dept-mini-kpi">
@@ -842,7 +830,6 @@
                                         </div>
                                     </div>
                                 </div>
-
 
                                 @if($d['spent_pct'] > 0)
                                     <div class="mt-3">
@@ -869,9 +856,7 @@
             @endforelse
         </div>
 
-
         <div class="tab-pane fade" id="tab-emp">
-
 
             <div class="row g-3 mb-4">
                 <div class="col-md-3 col-6">
@@ -904,7 +889,6 @@
                 </div>
             </div>
 
-
             <div class="row g-3 mb-4">
                 <div class="col-lg-6">
                     <div class="card-soft">
@@ -934,7 +918,6 @@
                     </div>
                 </div>
 
-
                 <div class="col-lg-6">
                     <div class="card-soft">
                         <div class="h"><i class="fas fa-chart-pie text-success me-2"></i> توزيع الموظفين حسب الأداء</div>
@@ -942,7 +925,6 @@
                     </div>
                 </div>
             </div>
-
 
             <div class="card-soft mb-4">
                 <div class="h">
@@ -1002,7 +984,6 @@
                 </div>
             </div>
 
-
             <div class="row g-3">
                 <div class="col-lg-6">
                     <div class="card-soft">
@@ -1043,7 +1024,6 @@
                     </div>
                 </div>
 
-
                 <div class="col-lg-6">
                     <div class="card-soft">
                         <div class="h"><i class="fas fa-chart-pie text-primary me-2"></i> توزيع المهام التشغيلية حسب الحالة</div>
@@ -1054,11 +1034,9 @@
         </div>
     </div>
 
-
     @endif
 </div>
 @endsection
-
 
 @push('scripts')
 <script src="{{ asset('vendor/chartjs/chart.umd.min.js') }}"></script>
@@ -1070,16 +1048,20 @@
     const empDist   = @json($ep['distribution'] ?? []);
     const taskStatus = @json($data['task_status_distribution'] ?? []);
 
-
     const cd1 = document.getElementById('chartKpiHealth');
     if (cd1) {
         new Chart(cd1, {
             type: 'doughnut',
             data: {
-                labels: ['صحيح (أخضر)', 'متابعة (أصفر)', 'حرج (أحمر)'],
+                labels: ['مؤشرات على الطريق الصحيح', 'تحتاج متابعة', 'حرجة', 'بدون قياس'],
                 datasets: [{
-                    data: [kpiHealth.green || 0, kpiHealth.yellow || 0, kpiHealth.red || 0],
-                    backgroundColor: ['#4caf50', '#f59e0b', '#ef4444'],
+                    data: [
+                        kpiHealth.green || 0,
+                        kpiHealth.yellow || 0,
+                        kpiHealth.red || 0,
+                        kpiHealth.no_data || 0,
+                    ],
+                    backgroundColor: ['#4caf50', '#f59e0b', '#ef4444', '#9ca3af'],
                     borderWidth: 3,
                     borderColor: '#fff',
                 }]
@@ -1091,7 +1073,6 @@
             }
         });
     }
-
 
     const cd2 = document.getElementById('chartKpiTrend');
     if (cd2 && kpiTrend.length) {
@@ -1116,7 +1097,6 @@
         });
     }
 
-
     const cd3 = document.getElementById('chartTaskTrend');
     if (cd3 && taskTrend.length) {
         new Chart(cd3, {
@@ -1135,7 +1115,6 @@
             }
         });
     }
-
 
     const cd6 = document.getElementById('chartEmpDistribution');
     if (cd6 && empDist) {
@@ -1157,7 +1136,6 @@
             }
         });
     }
-
 
     const cd7 = document.getElementById('chartTaskStatus');
     if (cd7 && taskStatus.length) {

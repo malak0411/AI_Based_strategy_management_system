@@ -371,7 +371,7 @@ class AiStrategicController extends Controller
 
 
         return redirect()
-            ->route('strategic.initiative.show', ['id' => $initiativeId])
+            ->route('strategic.initiatives.show', ['id' => $initiativeId])
             ->with('success', "تم اعتماد {$savedCount} مهام رئيسية وحفظها بنجاح");
     }
 }

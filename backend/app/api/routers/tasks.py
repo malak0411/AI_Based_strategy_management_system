@@ -1398,6 +1398,8 @@ async def get_task_risks(
 
             mitigations_data.append({
                 "mitigation_id": m.mitigation_id,
+                "risk_id" :m.risk_id,
+                "task_id" :m.task_id,
                 "action": m.action,
                 "assigned_to": {
                     "employee_id": m_assigned.employee_id if m_assigned else None,

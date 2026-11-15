@@ -1,8 +1,6 @@
 from datetime import date, datetime
 from calendar import monthrange
 from typing import Optional
-
-
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy import func, and_, desc, text
@@ -879,13 +877,16 @@ def minister_dashboard(
     today = date.today()
 
 
-    def kpi_health(value, target):
-        if not target:
-            return "red"
+    def kpi_health(value, target, has_measurement=True):
+        if not has_measurement:
+            return "no_data"
+        if not target or target <= 0:
+            return "no_data"
         pct = (float(value) / float(target)) * 100
-        if pct >= 90: return "green"
-        if pct >= 70: return "yellow"
+        if pct >= 80: return "green"
+        if pct >= 60: return "yellow"
         return "red"
+
 
 
     all_statuses = {s.status_id: s for s in db.query(DictStatus).all()}
@@ -1126,26 +1127,41 @@ def minister_dashboard(
     for k in kpis:
         latest = latest_measurements.get(k.kpi_id)
         prev = prev_measurements.get(k.kpi_id)
-        target = float(k.target_max or 0) or float(k.target_min or 0) or 100
+        has_measurement = latest is not None
+        target = float(k.target_max or 0) or float(k.target_min or 0) or 0
         current = float(latest.value) if latest else 0
-        achievement = round((current / target) * 100, 1) if target else 0
+        achievement = round((current / target) * 100, 1) if target > 0 else 0
         trend = "flat"
         if latest and prev:
             if float(latest.value) > float(prev.value): trend = "up"
             elif float(latest.value) < float(prev.value): trend = "down"
         kpi_rows.append({
-            "kpi_id": k.kpi_id, "name": k.name, "category": k.category,
-            "unit": k.unit, "target": target, "current": current,
-            "achievement": achievement, "trend": trend,
-            "health": kpi_health(current, target),
+            "kpi_id": k.kpi_id,
+            "name": k.name,
+            "category": k.category,
+            "unit": k.unit,
+            "target": target,
+            "current": current,
+            "achievement": achievement,
+            "trend": trend,
+            "health": kpi_health(current, target, has_measurement),
             "measured_at": str(latest.measured_at) if latest else None,
+            "has_measurement": has_measurement,
         })
 
 
-    green_c = sum(1 for k in kpi_rows if k["health"] == "green")
-    yellow_c = sum(1 for k in kpi_rows if k["health"] == "yellow")
-    red_c = sum(1 for k in kpi_rows if k["health"] == "red")
-    overall_index = round(sum(k["achievement"] for k in kpi_rows) / len(kpi_rows), 1) if kpi_rows else 0
+
+
+    green_c   = sum(1 for k in kpi_rows if k["health"] == "green")
+    yellow_c  = sum(1 for k in kpi_rows if k["health"] == "yellow")
+    red_c     = sum(1 for k in kpi_rows if k["health"] == "red")
+    no_data_c = sum(1 for k in kpi_rows if k["health"] == "no_data")
+
+    measured_kpis = [k for k in kpi_rows if k["has_measurement"]]
+    overall_index = round(
+        sum(k["achievement"] for k in measured_kpis) / len(measured_kpis), 1
+    ) if measured_kpis else 0
+
 
 
     completed_inits = sum(1 for i in active_inits if i.status_id == 3)
@@ -1184,9 +1200,13 @@ def minister_dashboard(
 
 
     impact_categories = ("أثر", "نتائج", "اجتماعي", "تنموي")
-    impact_kpis = [k for k in kpi_rows if (k["category"] or "") in impact_categories]
+    impact_kpis = [
+        k for k in kpi_rows
+        if (k["category"] or "") in impact_categories
+    ]
     if not impact_kpis:
-        impact_kpis = kpi_rows[:5]
+        impact_kpis = [k for k in kpi_rows if k["has_measurement"]][:5]
+
 
 
     goal_by_id = {g.goal_id: g for g in current_goals}
@@ -1602,7 +1622,14 @@ def minister_dashboard(
         },
         "overview": {
             "overall_index": overall_index,
-            "kpi_health": {"green": green_c, "yellow": yellow_c, "red": red_c, "total": len(kpi_rows)},
+            "kpi_health": {
+                "green": green_c,
+                "yellow": yellow_c,
+                "red": red_c,
+                "no_data": no_data_c,
+                "total": len(kpi_rows),
+            },
+
             "programs": {
                 "total": len(active_inits), "completed": completed_inits,
                 "active": len(active_inits), "delayed": delayed_inits,

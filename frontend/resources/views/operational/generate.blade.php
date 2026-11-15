@@ -424,6 +424,23 @@
             </div>
 
 
+            
+        </div>
+
+
+        <div class="col-lg-4">
+            <div class="info-card">
+                <h6>
+                    <i class="fas fa-lightbulb"></i>
+                    كيف يعمل النظام؟
+                </h6>
+                <ol>
+                    <li>يقرأ النظام الخريطة الاستراتيجية الكاملة</li>
+                    <li>يبني سياقًا موحّدًا للمهمة الرئيسية</li>
+                    <li>يولّد مهام تشغيلية واقعية</li>
+                    <li>تراجع وتعدّل وتعتمد</li>
+                </ol>
+            </div>
             <div class="form-section">
                 <h5>
                     <i class="fas fa-comment-dots"></i>
@@ -442,22 +459,6 @@
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
-
-
-        <div class="col-lg-4">
-            <div class="info-card">
-                <h6>
-                    <i class="fas fa-lightbulb"></i>
-                    كيف يعمل النظام؟
-                </h6>
-                <ol>
-                    <li>يقرأ النظام الخريطة الاستراتيجية الكاملة</li>
-                    <li>يبني سياقًا موحّدًا للمهمة الرئيسية</li>
-                    <li>يولّد مهام تشغيلية واقعية</li>
-                    <li>تراجع وتعدّل وتعتمد</li>
-                </ol>
             </div>
         </div>
     </div>

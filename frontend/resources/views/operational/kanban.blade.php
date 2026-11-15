@@ -122,11 +122,6 @@
                         <span class="avatar">{{ mb_substr($task['assigned_to_name'] ?? 'م', 0, 1, 'UTF-8') }}</span>
                         {{ $task['assigned_to_name'] ?? 'غير معين' }}
                     </div>
-                    <div class="task-progress">
-                        <div class="progress-bar" style="width: {{ $task['progress_percent'] ?? 0 }}%;">
-                            {{ $task['progress_percent'] ?? 0 }}%
-                        </div>
-                    </div>
                 </div>
                 @empty
                 <div class="empty-message">
@@ -160,11 +155,6 @@
                     <div class="task-assignee">
                         <span class="avatar">{{ mb_substr($task['assigned_to_name'] ?? 'م', 0, 1, 'UTF-8') }}</span>
                         {{ $task['assigned_to_name'] ?? 'غير معين' }}
-                    </div>
-                    <div class="task-progress">
-                        <div class="progress-bar" style="width: {{ $task['progress_percent'] ?? 0 }}%;">
-                            {{ $task['progress_percent'] ?? 0 }}%
-                        </div>
                     </div>
                 </div>
                 @empty
@@ -200,11 +190,6 @@
                         <span class="avatar">{{ mb_substr($task['assigned_to_name'] ?? 'م', 0, 1, 'UTF-8') }}</span>
                         {{ $task['assigned_to_name'] ?? 'غير معين' }}
                     </div>
-                    <div class="task-progress">
-                        <div class="progress-bar" style="width: {{ $task['progress_percent'] ?? 0 }}%;">
-                            {{ $task['progress_percent'] ?? 0 }}%
-                        </div>
-                    </div>
                 </div>
                 @empty
                 <div class="empty-message">
@@ -238,11 +223,6 @@
                     <div class="task-assignee">
                         <span class="avatar">{{ mb_substr($task['assigned_to_name'] ?? 'م', 0, 1, 'UTF-8') }}</span>
                         {{ $task['assigned_to_name'] ?? 'غير معين' }}
-                    </div>
-                    <div class="task-progress">
-                        <div class="progress-bar" style="width: {{ $task['progress_percent'] ?? 0 }}%;">
-                            {{ $task['progress_percent'] ?? 0 }}%
-                        </div>
                     </div>
                 </div>
                 @empty

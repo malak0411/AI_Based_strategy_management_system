@@ -1789,6 +1789,7 @@ public function addTaskMitigation(Request $request, $riskId)
 
         $data = [
             'action' => $request->action,
+            'task_id' => $request->task_id ? (int) $request->task_id : null,
             'assigned_to' => $request->assigned_to ? (int) $request->assigned_to : null,
             'due_date' => $request->due_date,
             'status_id' => $request->status_id ? (int) $request->status_id : null,

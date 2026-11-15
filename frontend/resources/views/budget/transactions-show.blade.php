@@ -1,8 +1,6 @@
 @extends('layouts.app')
 
-
 @section('title', 'تفاصيل العملية المالية')
-
 
 @section('content')
 <div class="container py-4" dir="rtl">
@@ -41,7 +39,6 @@
                             </tr>
                         </tbody>
                     </table>
-                    
                     <div class="text-center mt-4">
                         <button onclick="window.print()" class="btn btn-outline-secondary"><i class="fas fa-print"></i> طباعة</button>
                         <a href="{{ url()->previous() }}" class="btn btn-primary">عودة</a>

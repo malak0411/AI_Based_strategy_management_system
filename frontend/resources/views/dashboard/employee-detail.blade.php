@@ -188,7 +188,7 @@
                         <td>{{ $t['my_estimated_hours'] ?? 0 }} س</td>
                         <td>{{ $t['actual_hours'] ?? 0 }} س</td>
                         <td>
-                            <a href="{{ url('/operational/task-detail/' . $t['task_id']) }}"
+                            <a href="{{ route('operational.task-detail', $t['task_id']) }}"
                                class="btn btn-sm btn-outline-primary">عرض</a>
                         </td>
                     </tr>

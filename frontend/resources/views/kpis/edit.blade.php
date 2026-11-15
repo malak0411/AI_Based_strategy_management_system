@@ -9,8 +9,8 @@
             <h3><i class="fas fa-edit ml-2"></i>تعديل مؤشر الأداء</h3>
             <p class="text-muted mb-0">{{ $kpi['name'] ?? '' }}</p>
         </div>
-        <a href="{{ route('kpis.index') }}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-right"></i> العودة
+        <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-right"></i> العودة
         </a>
     </div>
 

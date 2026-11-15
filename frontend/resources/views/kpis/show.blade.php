@@ -16,7 +16,7 @@
             <a href="{{ route('kpis.measurements.create', $kpi['kpi_id']) }}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> إضافة قياس
             </a>
-            <a href="{{ route('kpis.index') }}" class="btn btn-outline-secondary">
+            <a href="javascript:history.back()" class="btn btn-outline-secondary">
                 <i class="fas fa-arrow-right"></i> العودة
             </a>
         </div>

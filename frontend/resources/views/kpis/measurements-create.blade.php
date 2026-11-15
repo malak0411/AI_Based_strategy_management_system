@@ -9,8 +9,8 @@
             <h3><i class="fas fa-plus ml-2"></i>إضافة قياس جديد</h3>
             <p class="text-muted mb-0">{{ $kpi['name'] ?? '' }}</p>
         </div>
-        <a href="{{ route('kpis.measurements', $kpi['kpi_id']) }}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-right"></i> العودة للقياسات
+        <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-right"></i> العودة
         </a>
     </div>
 

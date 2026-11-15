@@ -1,26 +1,50 @@
 
+import logging
 import ollama
 
+from app.config import settings
+
+logger = logging.getLogger(__name__)
+
+
 class OllamaClient:
-    def __init__(self, model: str = "qwen2.5:3b"):
-        self.model = model
+    def __init__(self):
+        self.model = settings.OLLAMA_MODEL
+        self.client = ollama.Client(host=settings.OLLAMA_HOST)
+        self.is_available = False
 
         try:
-            ollama.list()
-            print(f" Ollama Client جاهز (نموذج: {self.model})")
-        except Exception as e:
-            print(f" تأكد من تشغيل Ollama: {str(e)}")
+            self.client.list()
+            self.is_available = True
+            logger.info("Ollama service is available")
+        except Exception:
+            logger.warning("Ollama service is unavailable")
 
-    def generate(self, prompt: str, system_instruction: str = None) -> str:
+    def generate(
+        self,
+        prompt: str,
+        system_instruction: str = None
+    ) -> str:
         messages = []
-        if system_instruction:
-            messages.append({"role": "system", "content": system_instruction})
-        messages.append({"role": "user", "content": prompt})
 
-        response = ollama.chat(
+        if system_instruction:
+            messages.append({
+                "role": "system",
+                "content": system_instruction
+            })
+
+        messages.append({
+            "role": "user",
+            "content": prompt
+        })
+
+        response = self.client.chat(
             model=self.model,
             messages=messages
         )
-        return response['message']['content']
+
+        return response["message"]["content"]
+
 
 ollama_client = OllamaClient()
+

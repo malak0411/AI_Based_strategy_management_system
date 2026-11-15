@@ -80,6 +80,7 @@
             foreach (($risk['mitigations'] ?? []) as $mit) {
                 $mit['risk_name']  = $risk['name'] ?? '';
                 $mit['risk_id']    = $risk['risk_id'] ?? 0;
+                $mit['task_id']    = $risk['task_id'] ?? 0;
                 $mit['risk_level'] = $risk['risk_level'] ?? [];
                 $allMitigations[] = $mit;
             }
@@ -671,6 +672,7 @@
             @foreach($risks as $risk)
                 @php
                     $riskId      = $risk['risk_id'] ?? 0;
+                    $taskId      = $risk['task_id'] ?? 0;
                     $level       = $risk['risk_level'] ?? [];
                     $levelColor  = $level['color_hex'] ?? '#6c757d';
                     $status      = $risk['status'] ?? [];
@@ -837,6 +839,7 @@
                 </div>
 
 
+
                 <div class="mb-3">
                     <label class="form-label fw-bold">الإجراء <span class="text-danger">*</span></label>
                     <textarea id="mitigationAction" class="form-control" rows="3" placeholder="وصف الإجراء"></textarea>
@@ -856,7 +859,7 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label class="form-label fw-bold">تاريخ الاستحقاق</label>
+                        <label class="form-label fw-bold">تاريخ التنفيذ</label>
                         <input type="date" id="mitigationDueDate" class="form-control">
                     </div>
                     <div class="col-md-6 mb-3 d-flex align-items-end">

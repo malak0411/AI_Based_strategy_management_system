@@ -29,10 +29,6 @@
                     <td>
                         <a href="{{ route('admin.departments.show', $dept['department_id']) }}" class="btn btn-sm btn-outline-info"><i class="fas fa-eye"></i></a>
                         <a href="{{ route('admin.departments.edit', $dept['department_id']) }}" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a>
-                        <form action="{{ route('admin.departments.destroy', $dept['department_id']) }}" method="POST" class="d-inline" onsubmit="return confirm('متأكد من حذف الإدارة؟')">
-                            @csrf @method('DELETE')
-                            <button class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
-                        </form>
                     </td>
                 </tr>
                 @empty

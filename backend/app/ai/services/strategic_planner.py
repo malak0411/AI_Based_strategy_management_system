@@ -313,38 +313,32 @@ class StrategicPlanner:
 
     def normalize_tasks(self, raw_tasks: list, ctx: dict) -> list:
         departments = ctx.get("departments", [])
+        valid_dept_ids = {d["department_id"] for d in departments}
         normalized = []
         seen = set()
-
 
         for task in raw_tasks or []:
             if not isinstance(task, dict):
                 continue
 
-
             name = str(task.get("name") or task.get("title") or "").strip()
             if len(name) < 5:
                 continue
-
 
             key = re.sub(r"\s+", " ", name).lower()
             if key in seen:
                 continue
             seen.add(key)
 
-
             description = str(task.get("description") or "").strip()
             if len(description) < 10:
                 continue
 
-
             objective = str(task.get("objective") or "").strip()
-
 
             priority = str(task.get("priority") or "Medium").strip().title()
             if priority not in self.PRIORITY_MAP:
                 priority = "Medium"
-
 
             try:
                 duration = int(task.get("estimated_duration_days", 60))
@@ -352,23 +346,21 @@ class StrategicPlanner:
                 duration = 60
             duration = max(self.MIN_DURATION, min(duration, self.MAX_DURATION))
 
-
             deliverables = task.get("deliverables")
             if not isinstance(deliverables, list):
                 deliverables = []
             deliverables = [str(d).strip() for d in deliverables if str(d).strip()][:5]
-
 
             dependencies = task.get("dependencies")
             if not isinstance(dependencies, list):
                 dependencies = []
             dependencies = [str(d).strip() for d in dependencies if str(d).strip()]
 
-
-            assigned = self._assign_departments(name, description, objective, departments)
+            assigned = self._extract_user_departments(task, valid_dept_ids)
+            if not assigned:
+                assigned = self._assign_departments(name, description, objective, departments)
             if not assigned:
                 continue
-
 
             normalized.append({
                 "name": name[:255],
@@ -381,7 +373,6 @@ class StrategicPlanner:
                 "departments": assigned,
                 "is_cross_department": len(assigned) > 1,
             })
-
 
         return normalized
 
@@ -416,6 +407,46 @@ class StrategicPlanner:
                 "notes": "تقديم الدعم الفني والمساندة",
             })
 
+
+        return result
+
+    def _extract_user_departments(self, task: dict, valid_dept_ids: set) -> list:
+        raw = task.get("departments")
+        if not isinstance(raw, list) or not raw:
+            return []
+
+        result = []
+        seen = set()
+        lead_count = 0
+
+        for d in raw:
+            if not isinstance(d, dict):
+                continue
+            try:
+                dept_id = int(d.get("department_id"))
+            except (TypeError, ValueError):
+                continue
+            if dept_id not in valid_dept_ids:
+                continue
+            if dept_id in seen:
+                continue
+            seen.add(dept_id)
+
+            resp = str(d.get("responsibility_type", "SUPPORT")).upper()
+            if resp not in self.RESPONSIBILITY_TYPES:
+                resp = "SUPPORT"
+            if resp == "LEAD":
+                lead_count += 1
+
+            result.append({
+                "department_id": dept_id,
+                "department_name": d.get("department_name", ""),
+                "responsibility_type": resp,
+                "notes": d.get("notes", ""),
+            })
+
+        if lead_count != 1:
+            return []
 
         return result
 

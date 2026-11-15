@@ -62,7 +62,7 @@
         </div>
         <div>
             <a href="{{ route('operational.kanban', $majorTaskId) }}" class="btn-kanban">
-                <i class="fas fa-columns"></i> لوحة كانبان
+                <i class="fas fa-columns"></i> لوحة ادارة المهام 
             </a>
         </div>
     </div>

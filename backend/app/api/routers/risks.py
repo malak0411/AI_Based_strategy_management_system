@@ -1069,7 +1069,7 @@ async def create_mitigation(
 
     new_mitigation = RiskMitigation(
         risk_id=risk_id,
-        task_id=task_id,
+        task_id=risk.task_id,
         action=action,
         assigned_to=assigned_to,
         due_date=due_date,

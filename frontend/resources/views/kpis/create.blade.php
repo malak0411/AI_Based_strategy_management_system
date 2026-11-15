@@ -9,8 +9,8 @@
             <h3><i class="fas fa-plus ml-2"></i>إضافة مؤشر أداء جديد</h3>
             <p class="text-muted mb-0">إنشاء مؤشر أداء رئيسي جديد وربطه بهدف استراتيجي</p>
         </div>
-        <a href="{{ route('kpis.index') }}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-right"></i> العودة
+        <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-right"></i> العودة
         </a>
     </div>
 

@@ -144,11 +144,6 @@
         <div class="text-center mt-3">
             <a href="{{ route('password.request') }}" class="text-decoration-none small">نسيت كلمة المرور؟</a>
         </div>
-
-
-        <div class="text-center mt-4">
-            <small class="text-muted">© 2026 نظام إدارة الاستراتيجية - جميع الحقوق محفوظة</small>
-        </div>
     </div>
 </body>
 </html>

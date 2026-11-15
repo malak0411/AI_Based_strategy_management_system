@@ -171,30 +171,50 @@ class RiskRecommendationService:
             "initiative": initiative.name if initiative else None,
         }
 
+    
     def _build_prompt(self, context):
         payload = {
-            "role": "أنت مستشار إدارة مخاطر استراتيجية.",
-            "task": "حلّل الخطر واقترح توصيات عملية.",
+            "role": "مستشار متخصص في المخاطر التشغيلية ومتابعة الإدارات.",
+
+            "task": (
+                "حلّل الخطر المرتبط بالمهمة التشغيلية، واقترح إجراءات "
+                "عملية لتخفيفه، مع توضيح دور الإدارة في متابعة التنفيذ."
+            ),
+
             "context": context,
+
             "rules": [
-                "لا تقترح إجراءً موجوداً في mitigation_actions.",
-                "لا تكرر أي نص من previous_recommendations.",
-                "إن كان هناك إجراء قيد التنفيذ، اقترح خطوات تكميلية.",
-                "اقترح 2 إلى 4 توصيات.",
-                "كل توصية محددة وقابلة للتنفيذ.",
-                "لا تخترع موظفين أو أقسام.",
-                "أعد JSON فقط.",
+                "اربط كل توصية مباشرة بالخطر والمهمة التشغيلية.",
+                "حلّل أسباب الخطر وتأثيره على تقدم المهمة وموعد إنجازها.",
+                "استفد من بيانات الإدارة والموظفين والإسنادات والتقدم والميزانية.",
+                "اقترح من 2 إلى 4 إجراءات عملية ومحددة.",
+                "حدد ما يجب على الإدارة تنفيذه أو متابعته.",
+                "حدد نتيجة قابلة للتحقق لكل إجراء.",
+                "لا تخترع موظفين أو إدارات أو موارد.",
+                "لا تكرر إجراءات mitigation_actions أو previous_recommendations.",
+                "إذا كان إجراء قيد التنفيذ، اقترح إجراءً تكميليًا.",
+                "لا تقدم نصائح عامة مثل تحسين التنسيق دون خطوات واضحة.",
+                "اجعل الأولوية متناسبة مع شدة الخطر.",
+                "أعد JSON فقط باللغة العربية."
             ],
+
             "output_format": {
                 "risk_assessment": {
                     "current_state": "active|reduced|resolved|escalated",
                     "severity": "critical|high|medium|low",
-                    "reason": "سبب التقييم",
+                    "reason": "سبب التقييم"
                 },
                 "recommendations": [
-                    {"text": "...", "reasoning": "...", "priority": "high|medium|low"}
-                ],
-            },
+                    {
+                        "text": "إجراء التخفيف المقترح",
+                        "reasoning": "سبب اقتراح الإجراء",
+                        "priority": "high|medium|low",
+                        "management_action": "ما الذي يجب على الإدارة فعله؟",
+                        "follow_up": "كيفية متابعة تنفيذ الإجراء",
+                        "expected_result": "النتيجة المتوقعة القابلة للتحقق"
+                    }
+                ]
+            }
         }
         return json.dumps(payload, ensure_ascii=False, indent=2)
 
@@ -286,8 +306,12 @@ class RiskRecommendationService:
                 reasoning_json = json.dumps({
                     "risk_id": risk.risk_id,
                     "risk_name": risk.name,
-                    "text": rec.get("reasoning", ""),
+                    "reasoning": rec.get("reasoning", ""),
+                    "management_action": rec.get("management_action", ""),
+                    "follow_up": rec.get("follow_up", ""),
+                    "expected_result": rec.get("expected_result", "")
                 }, ensure_ascii=False)
+
 
                 new = AIRecommendation(
                     task_id=risk.task_id,

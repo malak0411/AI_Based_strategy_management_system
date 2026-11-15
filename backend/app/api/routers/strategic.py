@@ -58,7 +58,7 @@ PROG_STATUS_COMPLETED = 48
 PROG_STATUS_CANCELLED = 49
 
 
-TASK_STATUS_COMPLETED = 3
+TASK_STATUS_COMPLETED = 19
 
 
 def _serialize_pillar(p: StrategicPillar, db: Session, full: bool = False):

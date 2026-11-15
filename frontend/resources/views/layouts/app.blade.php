@@ -500,9 +500,11 @@
 
             {{-- الرئيسية --}}
             <div class="nav-section">الرئيسية</div>
+            @if(!$isMinister)
             <a class="nav-link {{ request()->routeIs('dashboard.employee') ? 'active' : '' }}" href="{{ route('dashboard.employee') }}">
                 <i class="fas fa-user"></i><span class="nav-text">لوحة الموظف</span>
             </a>
+            @endif
              @if($isMinister)
             <a class="nav-link {{ request()->routeIs('dashboard.minister') ? 'active' : '' }}" href="{{ route('dashboard.minister') }}">
                 <i class="fas fa-crown"></i><span class="nav-text">لوحة الوزير</span>
@@ -517,7 +519,7 @@
 
 
             {{-- الاستراتيجية --}}
-            @if($isMinister || $isSuperAdmin)
+            @if($isMinister)
             <div class="nav-section">الاستراتيجية</div>
             <a class="nav-link {{ request()->routeIs('strategic.vision.*') ? 'active' : '' }}" href="{{ route('strategic.vision.index') }}">
                 <i class="fas fa-eye"></i><span class="nav-text">الرؤية</span>
@@ -544,7 +546,7 @@
 
 
             {{-- المتابعة --}}
-            @if($isMinister || $isManager || $isSuperAdmin)
+            @if($isMinister || $isManager)
             <div class="nav-section">المتابعة</div>
             <a class="nav-link {{ request()->routeIs('kpis.*') ? 'active' : '' }}" href="{{ route('kpis.index') }}">
                 <i class="fas fa-chart-line"></i><span class="nav-text">مؤشرات الأداء</span>
@@ -552,19 +554,22 @@
             <a class="nav-link {{ request()->routeIs('budget.*') ? 'active' : '' }}" href="{{ route('budget.index') }}">
                 <i class="fas fa-money-bill-wave"></i><span class="nav-text">الميزانية</span>
             </a>
+            @if($isManager)
             <a class="nav-link {{ request()->routeIs('risks.*') ? 'active' : '' }}" href="{{ route('risks.index') }}">
                 <i class="fas fa-exclamation-triangle"></i><span class="nav-text">المخاطر</span>
             </a>
+            @endif
             @endif
 
 
 
             {{-- التقارير --}}
+            @if($isMinister)
             <div class="nav-section">تقارير</div>
             <a class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="{{ route('reports.index') }}">
                 <i class="fas fa-file-alt"></i><span class="nav-text">التقارير</span>
             </a>
-
+            @endif
 
             {{-- حسابي --}}
             <div class="nav-section">حسابي</div>
@@ -577,12 +582,14 @@
 
 
             {{-- تتبع المواقع --}}
-            @if($isManager || $isMinister || $isSuperAdmin)
+            @if($isManager)
             <div class="nav-section">متابعة</div>
             <a class="nav-link {{ request()->routeIs('location.*') ? 'active' : '' }}" href="{{ route('location.index') }}">
                 <i class="fas fa-map-marker-alt"></i><span class="nav-text">تتبع المواقع</span>
             </a>
             @endif
+             
+\            
 
 
             {{-- إدارة النظام --}}

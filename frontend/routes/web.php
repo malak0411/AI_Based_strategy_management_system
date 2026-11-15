@@ -466,6 +466,31 @@ Route::middleware(['check.jwt'])->prefix('reports')->name('reports.')->group(fun
     Route::get('/export/{type}', [ReportController::class, 'export'])->name('export');
 });
 
+Route::middleware(['check.jwt'])->prefix('budget')->name('budget.')->group(function () {
+    Route::get('/', [BudgetController::class, 'index'])->name('index');
+
+    Route::get('/approvals', [BudgetController::class, 'approvals'])->name('approvals');
+    Route::get('/approvals/count', [BudgetController::class, 'approvalsCount'])->name('approvals.count');
+    Route::post('/approvals/{transactionId}/approve', [BudgetController::class, 'approveTransaction'])->name('approvals.approve');
+    Route::post('/approvals/{transactionId}/reject', [BudgetController::class, 'rejectTransaction'])->name('approvals.reject');
+
+    Route::get('/create', [BudgetController::class, 'create'])->name('create');
+    Route::get('/available', [BudgetController::class, 'available'])->name('available');
+    Route::post('/', [BudgetController::class, 'store'])->name('store');
+
+    Route::get('/transactions/{transactionId}', [BudgetController::class, 'showTransaction'])->name('transactions.show');
+    Route::post('/transactions/{transactionId}/approve', [BudgetController::class, 'approveTransaction'])->name('transactions.approve');
+    Route::delete('/transactions/{transactionId}', [BudgetController::class, 'destroyTransaction'])->name('transactions.destroy');
+
+    Route::get('/{id}/transactions', [BudgetController::class, 'transactions'])->name('transactions');
+    Route::get('/{id}/transactions/create', [BudgetController::class, 'createTransaction'])->name('transactions.create');
+    Route::post('/{id}/transactions', [BudgetController::class, 'storeTransaction'])->name('transactions.store');
+
+    Route::get('/{id}', [BudgetController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [BudgetController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [BudgetController::class, 'update'])->name('update');
+});
+
 
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');

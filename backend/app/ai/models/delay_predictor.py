@@ -1,28 +1,22 @@
 import os
 import joblib
+import numpy as np
 from datetime import datetime, date
 from xgboost import XGBClassifier
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import StratifiedKFold
+
 from app.ai.services.data_loader import DataLoader
 from app.ai.services.feature_engineer import FeatureEngineer
 from app.ai.services.model_evaluator import ModelEvaluator
-
-try:
-    from lightgbm import LGBMClassifier
-    LIGHTGBM_AVAILABLE = True
-except ImportError:
-    LIGHTGBM_AVAILABLE = False
 
 MODELS_DIR = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'models')
 
 
 class DelayPredictor:
-
     def __init__(self):
         self.model = None
         self.feature_engineer = FeatureEngineer()
-        self.model_version = "3.1.0"
+        self.model_version = "4.1.0"
         self.training_date = None
         self.metrics = {}
         self.is_trained = False
@@ -40,7 +34,9 @@ class DelayPredictor:
         finally:
             loader.close()
 
-        if df.empty or len(df) < 10:
+        rows = 0 if df is None or df.empty else len(df)
+        if rows < 10:
+            print(f"[DelayPredictor] insufficient_data={rows}")
             return None
 
         X_train, X_test, y_train, y_test = self.feature_engineer.prepare_data(df)
@@ -48,44 +44,72 @@ class DelayPredictor:
         evaluator = ModelEvaluator()
         cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
-        models = {
-            'XGBoost': XGBClassifier(
-                n_estimators=250, max_depth=6, learning_rate=0.08,
-                subsample=0.85, colsample_bytree=0.85, min_child_weight=2,
-                gamma=0.1, reg_alpha=0.1, reg_lambda=1.5,
-                random_state=42, eval_metric='logloss',
-            ),
-            'Random Forest': RandomForestClassifier(
-                n_estimators=200, max_depth=14, min_samples_split=3,
-                random_state=42, class_weight='balanced',
-            ),
-        }
-        if LIGHTGBM_AVAILABLE:
-            models['LightGBM'] = LGBMClassifier(
-                n_estimators=250, max_depth=6, learning_rate=0.08,
-                subsample=0.85, colsample_bytree=0.85,
-                random_state=42, verbose=-1, class_weight='balanced',
+        model = XGBClassifier(
+            n_estimators=300,
+            max_depth=6,
+            learning_rate=0.06,
+            subsample=0.85,
+            colsample_bytree=0.85,
+            min_child_weight=3,
+            gamma=0.1,
+            reg_alpha=0.1,
+            reg_lambda=1.5,
+            random_state=42,
+            eval_metric='logloss',
+            scale_pos_weight=self._calculate_scale_pos_weight(y_train),
+        )
+
+        try:
+            model.fit(
+                X_train, y_train,
+                eval_set=[(X_test, y_test)],
+                verbose=False,
             )
+            evaluator.evaluate_model(model, X_test, y_test, model_name='XGBoost', cv=cv)
+        except Exception as e:
+            print(f"[DelayPredictor] train_failed={e}")
+            return None
 
-        for name, model in models.items():
-            try:
-                model.fit(X_train, y_train)
-                evaluator.evaluate_model(model, X_test, y_test, model_name=name, cv=cv)
-            except Exception as e:
-                print(f"train fail {name}: {e}")
-
-        evaluator.compare_models()
         best = evaluator.select_best()
+        if not best:
+            return None
 
-        if best:
-            self.model = models[best['model_name']]
-            self.metrics = best
-            self.training_date = datetime.now()
-            self.is_trained = True
-            self._save_model()
-            self._sync_model_registry()
+        self.model = model
+        self.metrics = best
+        self.training_date = datetime.now()
+        self.is_trained = True
+        self._save_model()
+        self._sync_model_registry()
+        self._log_feature_importance()
 
+        print(f"[DelayPredictor] trained_ok accuracy={self.metrics.get('accuracy')} f1={self.metrics.get('f1_score')}")
         return self.metrics
+
+    def _calculate_scale_pos_weight(self, y):
+        try:
+            y_arr = np.asarray(y)
+            neg = int((y_arr == 0).sum())
+            pos = int((y_arr == 1).sum())
+            if pos == 0:
+                return 1.0
+            return float(neg) / float(pos)
+        except Exception:
+            return 1.0
+
+    def _log_feature_importance(self):
+        if self.model is None or not hasattr(self.model, 'feature_importances_'):
+            return
+        try:
+            names = self.feature_engineer.get_feature_names()
+            importances = self.model.feature_importances_
+            if not names or len(names) != len(importances):
+                return
+            pairs = sorted(zip(names, importances), key=lambda x: x[1], reverse=True)
+            print("[DelayPredictor] top_features:")
+            for name, imp in pairs[:10]:
+                print(f"  {name} = {imp:.4f}")
+        except Exception as e:
+            print(f"[DelayPredictor] feature_importance_failed={e}")
 
     def predict(self, task_id=None, task_features=None):
         if task_features is None and task_id is not None:
@@ -125,18 +149,13 @@ class DelayPredictor:
         days_overdue = int(f.get('days_overdue', 0))
         delay_days = int(f.get('delay_days', 0))
         is_active = status_id in (5, 6, 8, 16, 26)
-
         computed_overdue = self._compute_overdue_from_dates(f, is_completed)
         effective_overdue = max(days_overdue, computed_overdue)
-
         is_really_delayed = (effective_overdue > 0 and is_completed == 0) or delay_days > 0
 
         completion_status = None
         if is_completed:
-            if delay_days > 0:
-                completion_status = "completed_late"
-            else:
-                completion_status = "completed_on_time"
+            completion_status = "completed_late" if delay_days > 0 else "completed_on_time"
 
         delay_category = 0
         delay_category_label = "في الموعد"
@@ -230,7 +249,7 @@ class DelayPredictor:
             conf = float(max(proba))
             return True, prob, conf
         except Exception as e:
-            print(f"model predict fail: {e}")
+            print(f"[DelayPredictor] predict_failed={e}")
             return False, 0.0, 0.0
 
     def _compute_delay_probability(self, f, state):
@@ -240,12 +259,10 @@ class DelayPredictor:
 
         if state["is_really_delayed"]:
             return max(model_prob, 0.95)
-
         if is_completed:
             if state["completion_status"] == "completed_late":
                 return max(model_prob, 0.90)
             return min(model_prob, 0.10)
-
         if status_id == 16:
             return max(model_prob, 0.55)
         if status_id == 5:
@@ -265,7 +282,6 @@ class DelayPredictor:
             return max(model_prob, 0.50)
         if gap < -15:
             return max(model_prob, 0.35)
-
         return model_prob
 
     def _risk_from_state(self, state, delay_prob):
@@ -342,7 +358,6 @@ class DelayPredictor:
 
         if not factors:
             factors.append({"feature": "المهمة تسير بشكل طبيعي", "importance": 0.5})
-
         return factors[:5]
 
     def _get_features_for_task(self, task_id):
@@ -397,14 +412,14 @@ class DelayPredictor:
             if not row:
                 row = AIModel(name='Delay Predictor', version=self.model_version)
                 db.add(row)
-            row.description = f"{self.metrics.get('model_name', 'Ensemble')} delay classifier"
-            row.accuracy = round(self.metrics.get('accuracy', 0) * 100, 2)
-            row.f1_score = round(self.metrics.get('f1_score', 0) * 100, 2)
+            row.description = "XGBoost delay classifier"
+            row.accuracy = round((self.metrics.get('accuracy') or 0) * 100, 2)
+            row.f1_score = round((self.metrics.get('f1_score') or 0) * 100, 2)
             row.deployed_at = datetime.now()
             row.is_active = True
             db.commit()
         except Exception as e:
-            print(f"registry sync fail: {e}")
+            print(f"[DelayPredictor] registry_sync_failed={e}")
             db.rollback()
         finally:
             db.close()
@@ -421,7 +436,7 @@ class DelayPredictor:
             self.feature_engineer.load(self.engineer_path)
             return True
         except Exception as e:
-            print(f"load fail: {e}")
+            print(f"[DelayPredictor] load_failed={e}")
             self.is_trained = False
             self.model = None
             return False

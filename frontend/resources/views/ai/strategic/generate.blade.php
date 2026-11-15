@@ -343,8 +343,20 @@
                     <div class="alert alert-warning mb-0 rounded-3">لم يتم العثور على خريطة استراتيجية لهذه المبادرة.</div>
                 @endif
             </div>
+        </div>
 
 
+        <div class="col-lg-4">
+            <div class="info-card">
+                <h6><i class="fas fa-lightbulb"></i> كيف يعمل؟</h6>
+                <ol>
+                    <li>يقرأ النظام الخريطة الاستراتيجية الكاملة (رؤية → ركيزة → هدف → برنامج → مبادرة)</li>
+                    <li>يحلل SWOT وPESTEL والميزانية والمخاطر ومؤشرات الأداء</li>
+                    <li>يولّد مهام رئيسية متكاملة بلا تكرار</li>
+                    <li>يعيّن إدارة مسؤولة واحدة ومساندة عند الحاجة</li>
+                    <li>تراجع وتعدّل وتعتمد</li>
+                </ol>
+            </div>
             <div class="form-section">
                 <h5>
                     <i class="fas fa-comment-dots"></i>
@@ -363,20 +375,6 @@
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
-
-
-        <div class="col-lg-4">
-            <div class="info-card">
-                <h6><i class="fas fa-lightbulb"></i> كيف يعمل؟</h6>
-                <ol>
-                    <li>يقرأ النظام الخريطة الاستراتيجية الكاملة (رؤية → ركيزة → هدف → برنامج → مبادرة)</li>
-                    <li>يحلل SWOT وPESTEL والميزانية والمخاطر ومؤشرات الأداء</li>
-                    <li>يولّد مهام رئيسية متكاملة بلا تكرار</li>
-                    <li>يعيّن إدارة مسؤولة واحدة ومساندة عند الحاجة</li>
-                    <li>تراجع وتعدّل وتعتمد</li>
-                </ol>
             </div>
         </div>
     </div>

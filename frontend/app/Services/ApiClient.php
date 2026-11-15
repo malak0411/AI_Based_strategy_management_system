@@ -12,7 +12,7 @@ class ApiClient
 
     public function __construct()
     {
-        $this->baseUrl = env('API_BASE_URL', 'http://localhost:8000');
+        $this->baseUrl = env('API_BASE_URL', 'http://localhost:8200');
         $this->client = new Client([
             'base_uri' => $this->baseUrl,
             'timeout' => 300.0,

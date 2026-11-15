@@ -6,8 +6,8 @@
 <div class="container-fluid px-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3><i class="fas fa-user-circle ml-2"></i>الملف الشخصي</h3>
-        <a href="{{ route('profile.edit') }}" class="btn-gold">
-            <i class="fas fa-edit"></i> تعديل
+        <a href="javascript:history.back()" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-right"></i> العودة
         </a>
     </div>
 

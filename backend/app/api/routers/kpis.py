@@ -476,7 +476,7 @@ async def create_measurement(
         source_type="manual",
         source_id=None,
         measured_at=measured_at if measured_at else datetime.now(),
-        recorded_by=current_user.employee_id,
+        recorded_by=current_user,
         notes=notes
     )
 
@@ -503,7 +503,7 @@ async def delete_measurement(
     if not measurement:
         raise HTTPException(status_code=404, detail="القياس غير موجود")
 
-    if measurement.recorded_by != current_user.employee_id:
+    if measurement.recorded_by != current_user:
         raise HTTPException(status_code=403, detail="لا يمكنك حذف قياس ليس لك")
 
     db.delete(measurement)
