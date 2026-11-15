@@ -1,14 +1,16 @@
 
+# Environment files
 .env
 .env.*
 !.env.example
 !.env.testing.example
 
+# Python environments
 **/.venv/
-.venv/
-venv/
-env/
+**/venv/
+**/env/
 
+# Python cache and test artifacts
 __pycache__/
 *.py[cod]
 *.pyo
@@ -16,11 +18,13 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 
+# IDE and operating system
 .idea/
 .vscode/
 .DS_Store
 Thumbs.db
 
+# Temporary and log files
 *.log
 *.tmp
 *.temp
@@ -28,37 +32,44 @@ Thumbs.db
 *.old
 *.orig
 
+# Database exports: ignore all by default
 *.sql
 *.sql.gz
 *.dump
 *.bak.sql
 
-!database/schema/full_schema.sql
+# Allow only the approved clean installation SQL files
+!database/schema/full_schema_clean.sql
 !database/seeders/data_seed.sql
 
+# Backend uploaded files
 backend/uploads/*
 !backend/uploads/.gitkeep
 
+# Backend runtime directories
 backend/logs/
 backend/temp/
 backend/cache/
 
+# Legacy model filenames only
 backend/models/anomaly_detector.pkl
 backend/models/delay_predictor.pkl
 
+# Frontend dependencies
 frontend/vendor/
 frontend/node_modules/
+
+# Frontend environment
 frontend/.env
 
+# Laravel runtime files
 frontend/storage/logs/*
 frontend/storage/framework/cache/*
 frontend/storage/framework/sessions/*
 frontend/storage/framework/views/*
 frontend/bootstrap/cache/*.php
 
+# Public generated files
 frontend/public/storage
 frontend/public/uploads/tasks/*
-
-.DS_Store
-Thumbs.db
 

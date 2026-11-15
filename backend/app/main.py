@@ -1,8 +1,9 @@
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
+from app.core.dependencies import get_current_employee
 
 from app.api.routers import (
     auth,
@@ -15,12 +16,14 @@ from app.api.routers import (
     kpis,
     reports,
 )
+
 from app.api.routers import (
     system_config,
     admin,
     location,
     departments as dept_routes,
 )
+
 from app.api.routers import dict_router
 from app.api.routers import audit_log as audit_log_router
 
@@ -40,27 +43,92 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "Accept"]
 )
 
 
 app.include_router(auth.router)
-app.include_router(strategic.router)
-app.include_router(tasks.router)
-app.include_router(dashboard.router)
-app.include_router(employees.router)
-app.include_router(budget.router)
-app.include_router(risks.router)
-app.include_router(kpis.router)
-app.include_router(system_config.router)
-app.include_router(admin.router)
-app.include_router(location.router)
-app.include_router(dept_routes.router)
-app.include_router(dict_router.router)
-app.include_router(ai_router)
-app.include_router(reports.router)
-app.include_router(audit_log_router.router)
+
+protected_dependencies = [
+    Depends(get_current_employee)
+]
+
+
+app.include_router(
+    strategic.router,
+    dependencies=protected_dependencies
+)
+
+app.include_router(
+    tasks.router,
+    dependencies=protected_dependencies
+)
+
+app.include_router(
+    dashboard.router,
+    dependencies=protected_dependencies
+)
+
+app.include_router(
+    employees.router,
+    dependencies=protected_dependencies
+)
+
+app.include_router(
+    budget.router,
+    dependencies=protected_dependencies
+)
+
+app.include_router(
+    risks.router,
+    dependencies=protected_dependencies
+)
+
+app.include_router(
+    kpis.router,
+    dependencies=protected_dependencies
+)
+
+app.include_router(
+    system_config.router,
+    dependencies=protected_dependencies
+)
+
+app.include_router(
+    admin.router,
+    dependencies=protected_dependencies
+)
+
+app.include_router(
+    location.router,
+    dependencies=protected_dependencies
+)
+
+app.include_router(
+    dept_routes.router,
+    dependencies=protected_dependencies
+)
+
+app.include_router(
+    dict_router.router,
+    dependencies=protected_dependencies
+)
+
+app.include_router(
+    ai_router,
+    dependencies=protected_dependencies
+)
+
+app.include_router(
+    reports.router,
+    dependencies=protected_dependencies
+)
+
+app.include_router(
+    audit_log_router.router,
+    dependencies=protected_dependencies
+)
 
 
 @app.get("/")

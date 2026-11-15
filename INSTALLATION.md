@@ -1,56 +1,60 @@
 
-# Installation Guide
+# AI-Based Strategy Management System
+## Installation Guide
 
-## 1. Overview
-
-This guide explains how to install and run the AI-Based Strategy Management System on a new Windows development computer.
+This guide describes how to install the project on a new Windows development computer.
 
 The system consists of:
 
 - Laravel web application.
 - Python FastAPI backend.
 - MySQL database.
-- XGBoost prediction model.
-- Ollama language-model service.
+- XGBoost delay prediction model.
+- Ollama language model service for AI features that depend on it.
 
-## 2. Prerequisites
+## 1. Prerequisites
 
-Install the following software before starting:
+Install the following software:
 
 | Software | Required version |
 |---|---|
 | PHP | 8.3 or later |
 | Composer | Current stable version |
-| Python | 3.11 recommended |
+| Python | 3.11 |
 | MySQL | 8.0 or compatible |
-| Node.js | 22 LTS |
+| Node.js | 22.12 or later |
 | npm | Included with Node.js |
 | Git | Current stable version |
-| Ollama | Required for language-model features |
+| Ollama | Required only for Ollama-based features |
 
-PHP must have the extensions required by Laravel and the database driver enabled, including PDO MySQL, OpenSSL, Mbstring, Tokenizer, XML, Ctype, JSON, and Fileinfo.
+Enable the PHP extensions required by Laravel, including:
 
-## 3. Download the Project
+- PDO
+- PDO MySQL
+- OpenSSL
+- Mbstring
+- Tokenizer
+- XML
+- Ctype
+- JSON
+- Fileinfo
 
-Clone the repository:
+## 2. Clone the Repository
+
+Open Git Bash or a terminal and run:
 
 ```bash
-git clone -b deployment-preparation https://github.com/malak0411/AI_basedStrategy.git
+git clone -b main https://github.com/malak0411/AI_Based_strategy_management_system.git
+cd AI_Based_strategy_management_system
 ```
 
-Enter the project directory:
+The installation instructions refer to the `main` branch.
 
-```bash
-cd AI_basedStrategy
-```
+## 3. Create the MySQL Database
 
-## 4. Create the MySQL Database
+Start the MySQL server.
 
-Start MySQL using the installed MySQL server or XAMPP.
-
-Open phpMyAdmin or a MySQL client.
-
-Create a database named:
+Create an empty database:
 
 ```sql
 CREATE DATABASE strategic_management_db
@@ -58,23 +62,27 @@ CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 ```
 
-Select the database and import the approved schema file:
+Import the schema file:
 
-`database/schema/full_schema.sql`
+`database/schema/full_schema_clean.sql`
 
-After the schema import succeeds, import:
+Then import the reference data:
 
 `database/seeders/data_seed.sql`
 
-Verify that the expected 40 tables and the required initial configuration records exist.
+The schema file creates the database tables and triggers.
+
+The seed file inserts reference and permission data. It does not create employee accounts or default login credentials.
 
 Important:
 
-The repository SQL files must contain the approved clean schema and safe seed data before installation. Do not use the original operational database dump.
+- Import the files only into a newly created empty database.
+- Do not import the original operational database dump.
+- Do not run Laravel migrations during initial installation.
+- Do not run destructive database commands.
+- The schema contains 40 table definitions and includes MyISAM tables. Do not convert storage engines without testing.
 
-Do not run Laravel migrations or destructive database commands during initial installation.
-
-## 5. Configure the Python Backend
+## 4. Configure the Python Backend
 
 Open a terminal:
 
@@ -82,13 +90,13 @@ Open a terminal:
 cd backend
 ```
 
-Create a virtual environment:
+Create a Python virtual environment:
 
 ```bash
-python -m venv .venv
+py -3.11 -m venv .venv
 ```
 
-Activate the environment:
+Activate it:
 
 ```powershell
 .venv\Scripts\activate
@@ -100,47 +108,64 @@ Create the environment file:
 copy .env.example .env
 ```
 
-Open `backend/.env` and configure:
+Edit `backend/.env` and configure:
 
-- Database host.
-- Database port.
-- Database username.
-- Database password.
-- Database name.
-- JWT secret.
-- Allowed web origins.
-- Ollama address and model.
-- SMTP settings if email functionality is required.
+- DB_HOST
+- DB_PORT
+- DB_USER
+- DB_PASSWORD
+- DB_NAME
+- SECRET_KEY
+- ALLOWED_ORIGINS
+- OLLAMA_HOST
+- OLLAMA_MODEL
+- SMTP settings if email functionality is required
 
-Generate a secure random JWT secret. Do not use the example placeholder.
+Generate a strong random JWT secret. Do not use the example placeholder.
 
-Install Python dependencies:
+Install dependencies:
 
 ```bash
 python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Verify the required model files exist in:
+Verify dependency consistency:
+
+```bash
+pip check
+```
+
+The expected result is:
+
+`No broken requirements found.`
+
+## 5. Verify the AI Model Files
+
+Check that the required model artifacts are present in:
 
 `backend/models/`
 
-Required delay prediction artifacts:
+The delay prediction service requires the model artifacts used by the project, including:
 
 - `delay_model.pkl`
 - `delay_feature_engineer.pkl`
 
+Do not delete, rename, or replace these files without verifying the corresponding model-loading code.
+
+The installed Python package versions must remain compatible with the saved model artifacts.
+
 ## 6. Configure Ollama
 
-Install Ollama and start the service.
+Ollama is required for features that use the local language model.
 
-Download the configured model:
+Install Ollama, start its service, and download the configured model:
 
 ```bash
 ollama pull qwen2.5:3b
 ```
 
-Verify installation:
+Verify the model:
 
 ```bash
 ollama list
@@ -150,36 +175,32 @@ The default service address is:
 
 `http://127.0.0.1:11434`
 
-## 7. Start the Python Backend
+If Ollama is not installed or running, Ollama-dependent features will not be available.
 
-From the `backend` directory, activate the virtual environment if it is not already active.
+## 7. Start FastAPI
 
-Start FastAPI:
+From the `backend` directory, with the virtual environment activated:
 
 ```bash
 uvicorn app.main:app --host 127.0.0.1 --port 8200
 ```
 
-Open:
+Keep this terminal open.
+
+Verify the service:
 
 - API: http://127.0.0.1:8200
 - Swagger: http://127.0.0.1:8200/docs
 - Health: http://127.0.0.1:8200/health
 
-Use a single worker while the application scheduler is initialized from the FastAPI startup event.
+Use one worker unless the scheduler lifecycle has been changed and verified for multiple workers.
 
-## 8. Configure the Laravel Application
+## 8. Configure Laravel
 
 Open another terminal:
 
 ```bash
 cd frontend
-```
-
-Install Composer dependencies:
-
-```bash
-composer install
 ```
 
 Create the environment file:
@@ -188,27 +209,32 @@ Create the environment file:
 copy .env.example .env
 ```
 
-Configure the following values in `frontend/.env`:
+Edit `frontend/.env`.
 
-- `APP_NAME`
-- `APP_ENV`
-- `APP_KEY`
-- `APP_DEBUG`
-- `APP_URL`
-- `DB_CONNECTION`
-- `DB_HOST`
-- `DB_PORT`
-- `DB_DATABASE`
-- `DB_USERNAME`
-- `DB_PASSWORD`
-- `API_BASE_URL`
+Configure the application and database values:
 
-Use the FastAPI address reachable from the Laravel server.
+- APP_ENV
+- APP_DEBUG
+- APP_URL
+- DB_HOST
+- DB_PORT
+- DB_DATABASE
+- DB_USERNAME
+- DB_PASSWORD
 
-For local development:
+Configure the FastAPI connection:
 
 ```dotenv
 API_BASE_URL=http://127.0.0.1:8200
+FASTAPI_URL=http://127.0.0.1:8200/api
+```
+
+For a different server or computer, replace `127.0.0.1` with the reachable server address.
+
+Install PHP dependencies:
+
+```bash
+composer install
 ```
 
 Generate the Laravel application key:
@@ -217,23 +243,25 @@ Generate the Laravel application key:
 php artisan key:generate
 ```
 
-Install JavaScript dependencies:
+Install frontend dependencies:
 
 ```bash
 npm install
 ```
 
-Build frontend assets:
+Build the frontend assets:
 
 ```bash
 npm run build
 ```
 
-Clear cached configuration:
+Clear Laravel cached configuration:
 
 ```bash
 php artisan optimize:clear
 ```
+
+For a production deployment, set `APP_ENV=production` and `APP_DEBUG=false`.
 
 ## 9. Start Laravel
 
@@ -247,41 +275,56 @@ Open:
 
 http://127.0.0.1:8000
 
-## 10. Start the System
+## 10. Start the Services
 
-The services should be running in this order:
+Start the services in this order:
 
 1. MySQL.
-2. Ollama, when required.
+2. Ollama, if required.
 3. FastAPI.
 4. Laravel.
 
-## 11. Initial Verification
+Keep the FastAPI and Laravel terminals running.
 
-Verify the following:
+## 11. Initial Account Setup
 
-- The MySQL database is accessible.
-- The required tables exist.
-- The seed data is available.
+The supplied schema and seed files do not create an employee account.
+
+Although the seed file inserts the system roles and permissions, it does not provide a username or password for the first administrator.
+
+A secure first-administrator creation procedure must be implemented and verified before this project can be considered ready for independent installation.
+
+Do not assume that a default username or password exists.
+
+Do not insert a plaintext password into the employees table.
+
+## 12. Initial Verification
+
+After the account bootstrap procedure is available, verify:
+
+- MySQL is accessible.
+- All 40 expected tables exist.
+- Reference and permission data are available.
 - FastAPI responds to the health check.
 - Laravel can communicate with FastAPI.
 - The login page is accessible.
 - Authentication works with a valid account.
-- Required model files can be loaded.
-- Ollama is available for features that depend on it.
+- The required XGBoost model files can be loaded.
+- Ollama-dependent features work when Ollama is installed.
 
-## 12. Deployment on Another Computer
+## 13. Deployment on Another Computer
 
 When the system is accessed from another computer:
 
-- Configure the Laravel URL using the server's reachable IP address or hostname.
-- Configure `API_BASE_URL` using the reachable FastAPI address.
+- Configure APP_URL using the reachable Laravel server address.
+- Configure API_BASE_URL and FASTAPI_URL using the reachable FastAPI server address.
 - Add the Laravel origin to the FastAPI CORS allowlist.
-- Configure firewall rules for the web and API ports.
+- Configure the required firewall rules.
 - Do not expose MySQL or Ollama directly to untrusted networks.
 - Use HTTPS for production deployments.
+- Keep all secret values in local environment files, never in Git.
 
-## 13. Important Warnings
+## 14. Database Safety
 
 Do not execute:
 
@@ -301,29 +344,29 @@ Do not execute:
 php artisan migrate --force
 ```
 
-The initial database is provided through the approved SQL schema and seed files.
+The initial database is installed using the approved schema and seed files.
 
-Do not commit `.env` files, passwords, JWT secrets, real operational records, or uploaded attachments.
+These SQL files are not an in-place upgrade mechanism.
 
-## 14. Troubleshooting
+## 15. Troubleshooting
 
 ### MySQL connection failed
 
-Check MySQL service status and database credentials.
+Check the MySQL service, database name, port, username, and password.
 
 ### FastAPI does not start
 
-Verify the virtual environment, installed requirements, and backend environment variables.
+Check the Python version, virtual environment, installed dependencies, and `backend/.env`.
 
-### Laravel cannot connect to the API
+### Laravel cannot connect to FastAPI
 
-Verify `API_BASE_URL` and confirm that FastAPI is running.
+Check that FastAPI is running and that API_BASE_URL and FASTAPI_URL point to the correct address.
 
-### AI language model is unavailable
+### Ollama is unavailable
 
-Verify Ollama is running and that the configured model has been downloaded.
+Check that Ollama is running and that the configured model has been downloaded.
 
 ### Delay prediction fails
 
-Verify that the required model artifacts are present and compatible with the installed Python dependencies.
+Verify the model artifacts and compatibility with the installed Python packages.
 

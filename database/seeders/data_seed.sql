@@ -2,7 +2,7 @@
 -- Includes ONLY dictionary tables and RBAC definitions; no employee/user records,
 -- strategy records, tasks, budgets, risks, AI logs, attachments, or audit/login history.
 -- This file does not create/drop tables and does not modify existing rows.
--- Import only AFTER full_schema.sql into a newly created empty database.
+-- Import only AFTER full_schema_clean.sql into a newly created empty database.
 -- INSERT IGNORE makes re-running this file idempotent for primary/unique keys.
 SET NAMES utf8mb4;
 
