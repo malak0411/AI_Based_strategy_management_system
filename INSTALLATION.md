@@ -50,11 +50,10 @@ cd AI_Based_strategy_management_system
 
 The installation instructions refer to the `main` branch.
 
-## 3. Create the MySQL Database
 
-Start the MySQL server.
+## 3. Create and Initialize the MySQL Database
 
-Create an empty database:
+Start the MySQL server and create a new empty database:
 
 ```sql
 CREATE DATABASE strategic_management_db
@@ -62,25 +61,35 @@ CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 ```
 
-Import the schema file:
+Import the following SQL files in the exact order shown:
 
-`database/schema/full_schema_clean.sql`
+1. `database/schema/full_schema_clean.sql`
+   - Creates the database tables and triggers.
 
-Then import the reference data:
+2. `database/seeders/data_seed.sql`
+   - Inserts reference data, system roles, and permissions.
 
-`database/seeders/data_seed.sql`
+3. `database/seeders/demo_data_seed.sql`
+   - Inserts selected sample departments, employees, strategic plans, goals, programs, initiatives, tasks, KPIs, budgets, assignments, and risk records.
+   - Creates four demonstration login accounts.
 
-The schema file creates the database tables and triggers.
+The third file is intended for demonstration and testing installations. It is not required for a production database.
 
-The seed file inserts reference and permission data. It does not create employee accounts or default login credentials.
+You can import the files using phpMyAdmin:
+
+1. Open the `strategic_management_db` database.
+2. Select the Import tab.
+3. Choose the first SQL file and import it.
+4. Repeat for the second and third files, in the specified order.
 
 Important:
 
-- Import the files only into a newly created empty database.
+- Import these files only into a newly created empty database.
 - Do not import the original operational database dump.
 - Do not run Laravel migrations during initial installation.
-- Do not run destructive database commands.
+- Do not import `demo_data_seed.sql` into an existing database containing project data.
 - The schema contains 40 table definitions and includes MyISAM tables. Do not convert storage engines without testing.
+
 
 ## 4. Configure the Python Backend
 
@@ -286,17 +295,29 @@ Start the services in this order:
 
 Keep the FastAPI and Laravel terminals running.
 
-## 11. Initial Account Setup
 
-The supplied schema and seed files do not create an employee account.
+## 11. Demonstration Login Accounts
 
-Although the seed file inserts the system roles and permissions, it does not provide a username or password for the first administrator.
+When `database/seeders/demo_data_seed.sql` has been imported successfully, the following demonstration accounts are available:
 
-A secure first-administrator creation procedure must be implemented and verified before this project can be considered ready for independent installation.
+| Role | Email | Password |
+|---|---|---|
+| Super Admin | admin@example.com | AdminDemo@2026! |
+| Minister | minister@example.com | MinisterDemo@2026! |
+| Manager | manager@example.com | ManagerDemo@2026! |
+| Employee | employee@example.com | EmployeeDemo@2026! |
 
-Do not assume that a default username or password exists.
+These accounts are provided for local demonstration and testing only.
 
-Do not insert a plaintext password into the employees table.
+Important security notes:
+
+- The passwords are stored as bcrypt hashes in the database.
+- These are public demonstration credentials and must never be used for production deployment.
+- Change all demonstration passwords before using the system in a real environment.
+- Do not use these accounts to store real organizational information.
+- The Manager account represents a department manager in the sample data.
+
+
 
 ## 12. Initial Verification
 
@@ -311,6 +332,12 @@ After the account bootstrap procedure is available, verify:
 - Authentication works with a valid account.
 - The required XGBoost model files can be loaded.
 - Ollama-dependent features work when Ollama is installed.
+- Demonstration departments and employee records are available when the demo seed is imported.
+- The four demonstration accounts can authenticate successfully.
+- Each account has the expected role and permissions.
+- Role-based access and dashboard redirection work as expected.
+- Strategic goals, tasks, KPIs, budgets, and risk records are displayed correctly.
+
 
 ## 13. Deployment on Another Computer
 
